@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\InteractsWithTime;
 
 class HomeController extends Controller
 {
