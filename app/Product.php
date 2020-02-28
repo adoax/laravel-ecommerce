@@ -6,5 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = ['title', 'slug', 'excerpt', 'description', 'price', 'image'];
+
+    /**
+     * Permet de recuperer le prix en format français
+     *
+     * @return string
+     */
+    public function getPrice()
+    {
+        $price = $this->price / 100;
+        return number_format($price, 2, ',', ' ') . '€';
+    }
 }
