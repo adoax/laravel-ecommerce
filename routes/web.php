@@ -13,10 +13,17 @@
 
 use Illuminate\Support\Facades\Route;
 
-//Route::get('/product', 'ProductController@index')->name('index');
-//Route::get('products/{product}', 'ProductController@show')->name('product.show');
+/** Route product */
+Route::resource('produits', 'ProductController')->parameters([
+    'produits' => 'product'
+]);
 
-Route::resource('products', 'ProductController');
+/** Route Cart */
+Route::get('panier/ajouter', 'CartController@store')->name('cart.store');
+Route::get('panier', "CartController@index")->name('cart.index');
+Route::delete('panier/{cart}', "CartController@destroy")->name('cart.destroy');
+//Route::resource('panier', 'CartController');
+
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');

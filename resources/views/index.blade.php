@@ -21,7 +21,7 @@
                         <div class="mb-1 text-muted">{{$product->created_at->format('d/m/Y')}}</div>
                         <p class="card-text mb-auto">{{$product->excerpt}}.</p>
                         <strong class="card-text mb-auto">{{$product->getPrice()}}</strong>
-                        <a href="{{route('products.show', $product->id)}}" class="stretched-link">Continue reading</a>
+                        <a href="{{route('produits.show', $product->id)}}" class="stretched-link">Continue reading</a>
                     </div>
                     <div class="col-auto d-none d-lg-block">
                         <img src="{{$product->image}}" alt="Titre de l'image">

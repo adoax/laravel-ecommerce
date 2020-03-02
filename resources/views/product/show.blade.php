@@ -10,7 +10,9 @@
                 <div class="mb-1 text-muted">{{$product->created_at->format('d/m/Y')}}</div>
                 <p class="card-text mb-auto">{{$product->description}}.</p>
                 <strong class="card-text mb-auto">{{$product->getPrice()}}</strong>
-                <form action="">
+                <form action="{{route('cart.store')}}">
+                    @csrf
+                    <input type="hidden" name="id" value="{{$product->id}}">
                     <button type="submit" class="btn btn-dark">Ajouter au panier</button>
                 </form>
             </div>
