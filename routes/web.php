@@ -19,7 +19,7 @@ Route::resource('produits', 'ProductController')->parameters([
 ]);
 
 /** Route Cart */
-Route::get('panier/ajouter', 'CartController@store')->name('cart.store');
+Route::post('panier/ajouter', 'CartController@store')->name('cart.store');
 Route::get('panier', "CartController@index")->name('cart.index');
 Route::delete('panier/{cart}', "CartController@destroy")->name('cart.destroy');
 //Route::resource('panier', 'CartController');
