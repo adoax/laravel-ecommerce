@@ -21,6 +21,10 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @yield('styles')
+
+    @yield('script')
+
+    @yield('extra-meta')
 </head>
 <body>
 <div class="container">
@@ -111,5 +115,6 @@
         <a href="#">Back to top</a>
     </p>
 </footer>
+@yield('javascript')
 </body>
 </html>
