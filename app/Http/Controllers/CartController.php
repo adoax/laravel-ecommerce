@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CartRequest;
 use App\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class CartController extends Controller
@@ -84,11 +88,24 @@ class CartController extends Controller
      *
      * @param Request $request
      * @param int $id
-     * @return Response
+     * @return JsonResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->json()->all();
+
+        $validates = Validator::make($request->all(), [
+            'qty' => 'numeric|required|between:1,5',
+        ]);
+
+        if ($validates->fails()) {
+            Session::flash('status', 'Une erreur est survenue veuillez réessayer');
+            return response()->json(['error' => 'Cart Quantity Has Not Been Updated']);
+        }
+
+        Cart::update($id, $data['qty']);
+        Session::flash('status', 'La quantité est bien ete modifier');
+        return response()->json(['success', 'Cart Quantity Has Been Updated']);
     }
 
     /**

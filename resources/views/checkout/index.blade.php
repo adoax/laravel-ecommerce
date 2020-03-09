@@ -32,7 +32,7 @@
 @endsection
 
 @section('javascript')
-    <script>
+    <script type="text/javascript">
         var stripe = Stripe('pk_test_65PYwXEiVATreY0KH2PnSVT000B4vs9Jzk');
         var elements = stripe.elements();
 
@@ -114,12 +114,12 @@
                                 })
                             }
                         ).then((data) => {
-                            console.log(data)
+                            // console.log(data)
                             window.location.href = redirect
                         })
-                        .catch((error) => {
-                            console.log(error)
-                        })
+                            .catch((error) => {
+                                // console.log(error)
+                            })
 
                     }
                 }

@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 
+@section('extra-meta')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
+
+
 @section('content')
 
     <div class="px-4 px-lg-0 bg-cart">
@@ -50,8 +55,16 @@
                                                 </div>
                                             </th>
                                             <td class="border-0 align-middle">
-                                                <strong>{{$cart->model->getPrice()}}</strong></td>
-                                            <td class="border-0 align-middle"><strong>1</strong></td>
+                                                <strong>{{getPrice($cart->subtotal())}}</strong></td>
+                                            <td class="border-0 align-middle">
+                                                <select name="qty" id="qty" class="custom-select"
+                                                        data-id="{{ $cart->rowId  }}">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <option value="{{$i}}" {{ $i == $cart->qty ? 'selected' : '' }}>{{$i}}</option>
+                                                    @endfor
+                                                </select>
+                                                @error('qty') <small id="qty" class="form-text text-muted">{{ $message }}</small> @enderror
+                                            </td>
                                             <td class="border-0 align-middle">
 
                                                 <form action="{{route('cart.destroy', $cart->rowId)}}" method="post">
@@ -109,19 +122,18 @@
                                 <ul class="list-unstyled mb-4">
                                     <li class="d-flex justify-content-between py-3 border-bottom"><strong
                                             class="text-muted">Sous-total
-                                            </strong><strong>{{getPrice(Cart::subtotal())}}</strong></li>
-                                    {{--                                    <li class="d-flex justify-content-between py-3 border-bottom">--}}
-                                    {{--                                        <strong class="text-muted">Shipping and handling</strong><strong>$10.00</strong>--}}
-                                    {{--                                    </li>--}}
+                                        </strong><strong>{{getPrice(Cart::subtotal())}}</strong></li>
                                     <li class="d-flex justify-content-between py-3 border-bottom"><strong
-                                            class="text-muted">Taxe: 20%</strong><strong>{{getPrice(Cart::tax())}}</strong>
+                                            class="text-muted">Taxe:
+                                            20%</strong><strong>{{getPrice(Cart::tax())}}</strong>
                                     </li>
                                     <li class="d-flex justify-content-between py-3 border-bottom"><strong
                                             class="text-muted">Total</strong>
                                         <h5 class="font-weight-bold">{{getPrice(Cart::total())}}</h5>
                                     </li>
                                 </ul>
-                                <a href="{{route('checkout.index')}}" class="btn btn-dark rounded-pill py-2 btn-block">Procéder au paiement</a>
+                                <a href="{{route('checkout.index')}}" class="btn btn-dark rounded-pill py-2 btn-block">Procéder
+                                    au paiement</a>
                             </div>
                         </div>
                     </div>
@@ -136,3 +148,35 @@
 
 @endsection
 
+
+@section('javascript')
+
+    <script>
+        var qty = document.querySelectorAll('#qty');
+        Array.from(qty).forEach((element) => {
+            element.addEventListener('change', function () {
+                var rowId = element.getAttribute('data-id');
+                var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                fetch(`/panier/${rowId}`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json, text-plain, */*",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-CSRF-TOKEN": token
+                        },
+                        method: 'PATCH',
+                        body: JSON.stringify({
+                            qty: this.value
+                        })
+                    }).then((data) => {
+                    console.log(data);
+                    location.reload();
+                }).catch((error) => {
+                    console.log(error);
+                });
+            });
+        });
+    </script>
+
+@endsection
