@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
+use DateTime;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
@@ -53,14 +58,55 @@ class CheckoutController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
-        Cart::destroy();
         $data = $request->json()->all();
+        $order = new Order();
 
-        return $data['payementItems'];
+        $order->payment_intent_id = $data['payementItems']['id'];
+        $order->amout = $data['payementItems']['amount'];
+        $order->payment_created_at = (new DateTime())
+            ->setTimestamp($data['payementItems']['created'])
+            ->format('Y-m-d H:i:s');
+
+        $products = [];
+        $i = 0;
+
+        foreach (Cart::content() as $product) {
+            $products['product_' . $i][] = $product->model->title;
+            $products['product_' . $i][] = $product->model->price;
+            $products['product_' . $i][] = $product->qty;
+            $i++;
+        }
+
+        $order->products = serialize($products);
+        $order->user_id = 1;
+        $order->save();
+
+        if ($data['payementItems']['status'] === 'succeeded') {
+            Session::flash('status', 'Votre commande a été traitée avec succès.');
+            return response()->json(['status' => 'Payment Intent Succeeded']);
+        } else {
+            return response()->json(['error' => 'Payment Intent Not Succeeded']);
+        }
+
+    }
+
+    /**
+     * @return Application|Factory|RedirectResponse|View
+     */
+    public function thankYou()
+    {
+        if (Session::has('status')) {
+            Cart::destroy();
+            return view('checkout.thankyou');
+
+        } else {
+            return redirect()->route('produits.index');
+        }
+
     }
 
     /**

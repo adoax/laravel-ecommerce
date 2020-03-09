@@ -96,8 +96,6 @@
             <a class="p-2 text-muted" href="#">Travel</a>
         </nav>
     </div>
-
-
     @if(session('status'))
         <div class="alert alert-success">
             {{ session('status') }}
