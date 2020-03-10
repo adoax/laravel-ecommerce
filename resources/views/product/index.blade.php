@@ -16,7 +16,7 @@
                 <div
                     class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-3 d-flex flex-column position-static">
-                        <strong class="d-inline-block mb-2 text-primary">La CATEGORY</strong>
+                        <strong class="d-inline-block mb-2 text-primary">{{ $product->categories->pluck('name')->implode(', ') }}</strong>
                         <h3 class="mb-0">{{$product->title}}</h3>
                         <div class="mb-1 text-muted">{{$product->created_at->format('d/m/Y')}}</div>
                         <p class="card-text mb-auto">{{$product->excerpt}}.</p>
@@ -32,6 +32,7 @@
         @endforeach
     </div>
 
+    {{ $products->appends(request()->input())->links() }}
 
 @endsection
 

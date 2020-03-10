@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Product;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -15,7 +16,16 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('product.index', ['products' => Product::all()]);
+        if (request()->category) {
+            $products = Product::with('categories')->whereHas('categories', function ($query) {
+               $query->where('slug', request()->category);
+            })->paginate(6);
+        } else {
+
+            $products = Product::with('categories')->paginate(10);
+        }
+
+        return view('product.index', compact('products'));
     }
 
     /**
