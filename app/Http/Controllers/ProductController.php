@@ -19,10 +19,10 @@ class ProductController extends Controller
         if (request()->category) {
             $products = Product::with('categories')->whereHas('categories', function ($query) {
                $query->where('slug', request()->category);
-            })->paginate(6);
+            })->orderBy('created_at', 'DESC')->paginate(6);
         } else {
 
-            $products = Product::with('categories')->paginate(10);
+            $products = Product::with('categories')->orderBy('created_at', 'DESC')->paginate(10);
         }
 
         return view('product.index', compact('products'));

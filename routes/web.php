@@ -32,3 +32,8 @@ Route::get('merci', 'CheckoutController@thankYou')->name('checkout.thank');
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
+});

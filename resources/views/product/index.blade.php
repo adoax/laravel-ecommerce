@@ -24,7 +24,7 @@
                         <a href="{{route('produits.show', $product->id)}}" class="stretched-link">Continue reading</a>
                     </div>
                     <div class="col-auto d-none d-lg-block">
-                        <img src="{{$product->image}}" alt="Titre de l'image">
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="Titre de l'image" class="img-fluid">
                     </div>
                 </div>
             </div>
