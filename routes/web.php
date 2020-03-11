@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::resource('produits', 'ProductController')->parameters([
     'produits' => 'product'
 ]);
+Route::get('search', 'ProductController@search')->name('product.search');
 
 /** Route Cart */
 Route::post('panier/ajouter', 'CartController@store')->name('cart.store');

@@ -18,7 +18,7 @@ class ProductController extends Controller
     {
         if (request()->category) {
             $products = Product::with('categories')->whereHas('categories', function ($query) {
-               $query->where('slug', request()->category);
+                $query->where('slug', request()->category);
             })->orderBy('created_at', 'DESC')->paginate(6);
         } else {
 
@@ -57,5 +57,20 @@ class ProductController extends Controller
     public function delete(Product $product)
     {
         $product->delete();
+    }
+
+    public function search()
+    {
+        request()->validate([
+            'src' => 'required'
+        ]);
+
+        $search = request()->input('src');
+
+        $products = Product::where('title', 'like', "%$search%")
+            ->orWhere('description', 'like', "%$search%")
+            ->paginate(6);
+
+        return view('product.search', compact('products'));
     }
 }
