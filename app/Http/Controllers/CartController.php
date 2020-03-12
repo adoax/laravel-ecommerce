@@ -47,18 +47,17 @@ class CartController extends Controller
     {
 
         $cartExist = Cart::search(function($cartItem, $rowId) use ($request) {
-           return $cartItem->id == $request->id;
+           return $cartItem->id == $request->product_id;
         });
 
         if ($cartExist->isNotEmpty()) {
-            return redirect()->route('produits.index')->with('status', 'Le produit est dèja dans le panier');
+            return redirect()->route('produits.index')->with('warning', 'Le produit est dèja dans le panier');
         }
-
-        $product = Product::find($request->id);
+        $product = Product::find($request->product_id);
         Cart::add($product->id, $product->title, 1, $product->price)
             ->associate('App\Product');
 
-        return redirect()->route('produits.index')->with('status', 'Le produit est bien éte ajouter');
+        return redirect()->route('produits.index')->with('success', 'Le produit est bien éte ajouter');
     }
 
     /**
@@ -100,11 +99,16 @@ class CartController extends Controller
 
         if ($validates->fails()) {
             Session::flash('status', 'Une erreur est survenue veuillez réessayer');
+            return response()->json(['warning' => 'Cart Quantity Has Not Been Updated']);
+        }
+
+        if ($data['qty'] > $data['stock']) {
+            Session::flash('warning', 'La quantité de ce produit n\'est pas disponible');
             return response()->json(['error' => 'Cart Quantity Has Not Been Updated']);
         }
 
         Cart::update($id, $data['qty']);
-        Session::flash('status', 'La quantité est bien ete modifier');
+        Session::flash('success', 'La quantité est bien ete modifier');
         return response()->json(['success', 'Cart Quantity Has Been Updated']);
     }
 

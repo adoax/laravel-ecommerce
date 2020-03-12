@@ -49,7 +49,7 @@
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
-                        <a class="dropdown-item" href="#">Gestion de rien</a>
+                        <a class="dropdown-item" href="{{route('profile.command')}}">Voir mes command</a>
 
                         <a class="dropdown-item" href="#">Gestion de rien *2</a>
 
@@ -80,11 +80,13 @@
             @endforeach
         </nav>
     </div>
-    @if(session('status'))
-        <div class="alert alert-success">
-            {{ session('status') }}
-        </div>
-    @endif
+    <div class="flash-message">
+        @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+            @if(Session($msg))
+                <p class="alert alert-{{ $msg }}">{{ Session($msg) }}</p>
+            @endif
+        @endforeach
+    </div>
 
     <main class="py-4">
         @yield('content')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\InteractsWithTime;
 
 class HomeController extends Controller
@@ -21,5 +22,10 @@ class HomeController extends Controller
         $categories = Category::all();
 
         return view('index', compact('products', 'categories'));
+    }
+
+    public function command()
+    {
+        return view('users.command', ['orders' => Auth::user()->orders]);
     }
 }

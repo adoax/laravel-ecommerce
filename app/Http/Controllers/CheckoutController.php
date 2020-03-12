@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use App\Product;
 use DateTime;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Contracts\Foundation\Application;
@@ -62,6 +63,11 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
+        if ($this->checkIfNotAvailable()) {
+            Session::flash('warning', 'Un produit dans votre panier n\'est plus disponible');
+            return response()->json(['success' => false], 400);
+        }
+
         $data = $request->json()->all();
         $order = new Order();
 
@@ -82,7 +88,7 @@ class CheckoutController extends Controller
         }
 
         $order->products = serialize($products);
-        $order->user_id = 1;
+        $order->user_id = Auth()->id() ?? '';
         $order->save();
 
         if ($data['payementItems']['status'] === 'succeeded') {
@@ -100,6 +106,7 @@ class CheckoutController extends Controller
     public function thankYou()
     {
         if (Session::has('status')) {
+            $this->updateStock();
             Cart::destroy();
             return view('checkout.thankyou');
 
@@ -152,5 +159,31 @@ class CheckoutController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Permet de verifier si il y à les stock necessaire à l'achat
+     */
+    private function checkIfNotAvailable()
+    {
+        foreach(Cart::content() as $item) {
+            $product = Product::find($item->model->id);
+
+            if ($product->stocks < $item->qty) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Permet de mettre a jour le stock des objet à l'achat de celui-ci
+     */
+    private function updateStock()
+    {
+        foreach(Cart::content() as $item) {
+            $product = Product::find($item->model->id);
+            $product->update(['stocks' => $product->stocks - $item->qty]);
+        }
     }
 }

@@ -18,7 +18,7 @@ class ProductTest extends TestCase
      */
     public function create_success()
     {
-        $response = $this->post(route('products.store'), [
+        $response = $this->post(route('produits.store'), [
             'title' => $this->faker->unique()->word(5),
             'slug' => $this->faker->unique()->slug,
             'excerpt' => $this->faker->sentence,
@@ -35,7 +35,7 @@ class ProductTest extends TestCase
      */
     public function updated_success()
     {
-        $this->post(route('products.store'), [
+        $this->post(route('produits.store'), [
             'title' => $this->faker->unique()->word(5),
             'slug' => $this->faker->unique()->slug,
             'excerpt' => $this->faker->sentence,
@@ -48,7 +48,7 @@ class ProductTest extends TestCase
         $newTile = $this->faker->unique()->word(5);
         $newdesc = $this->faker->text;
 
-        $response = $this->patch(route('products.update', $product), [
+        $response = $this->patch(route('produits.update', $product), [
             'title' => $newTile,
             'description' => $newdesc
         ]);
@@ -61,7 +61,7 @@ class ProductTest extends TestCase
     /** @test */
     public function delete_success()
     {
-        $this->post(route('products.store'), [
+        $this->post(route('produits.store'), [
             'title' => $this->faker->unique()->word(5),
             'slug' => $this->faker->unique()->slug,
             'excerpt' => $this->faker->sentence,

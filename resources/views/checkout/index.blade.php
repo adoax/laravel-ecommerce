@@ -97,7 +97,6 @@
                         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         var payementItems = result.paymentIntent;
                         var url = form.action;
-                        var redirect = '/merci'
 
                         fetch(
                             url,
@@ -115,7 +114,11 @@
                             }
                         ).then((data) => {
                             // console.log(data)
-                            window.location.href = redirect
+                            if (data.status === 400) {
+                                window.location.href = '/panier'
+                            } else {
+                                window.location.href = '/merci'
+                            }
                         })
                             .catch((error) => {
                                 // console.log(error)

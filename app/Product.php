@@ -10,7 +10,7 @@ class Product extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['title', 'slug', 'excerpt', 'description', 'price', 'image'];
+    protected $fillable = ['title', 'slug', 'excerpt', 'description', 'price', 'image', 'stocks'];
 
     /**
      * Permet de recuperer le prix en format français

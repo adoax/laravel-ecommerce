@@ -42,6 +42,24 @@ class CartTests extends TestCase
     }
 
     /** @test */
+    public function add_multiple_identical_product()
+    {
+        $product = factory(Product::class)->create();
+
+        $this->post(route('cart.store'), [
+            'id' => $product->id
+        ]);
+
+        $this->assertEquals(1, Cart::count());
+
+        $this->json('PATCH', route('cart.update', '027c91341fd5cf4d2579b49c4b6a90da'), [
+            'qty' => 2
+        ]);
+
+        $this->assertEquals(2, Cart::count());
+    }
+
+    /** @test */
     public function delete_product_cart()
     {
         $product = factory(Product::class)->create();

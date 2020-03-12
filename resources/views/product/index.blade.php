@@ -22,7 +22,7 @@
                             <h5 class="mb-0">{{ $product->title }}</h5>
                             <p class="mb-3 text-muted">{{ $product->subtitle }}</p>
                             <strong class="display-4 mb-4 text-secondary">{{ $product->getPrice() }}</strong>
-                            <a href="{{ route('produits.show', $product->slug) }}" class="stretched-link btn btn-info"><i class="fa fa-location-arrow" aria-hidden="true"></i> Consulter le produit</a>
+                            <a href="{{ route('produits.show', $product->id) }}" class="stretched-link btn btn-info"><i class="fa fa-location-arrow" aria-hidden="true"></i> Consulter le produit</a>
                         </div>
                         <div class="col-auto d-none d-lg-block">
                             <img src="{{ asset('storage/' . $product->image) }}" alt="" width="250">

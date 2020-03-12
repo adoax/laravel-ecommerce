@@ -34,7 +34,9 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view('product.show', compact('product'));
+        $stock = $product->stocks === 0 ? 'Indisponible' : 'Disponible';
+
+        return view('product.show', compact('product', 'stock'));
     }
 
     /**

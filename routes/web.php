@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::resource('produits', 'ProductController')->parameters([
     'produits' => 'product'
 ]);
+
 Route::get('search', 'ProductController@search')->name('product.search');
 
 /** Route Cart */
@@ -33,7 +34,7 @@ Route::get('merci', 'CheckoutController@thankYou')->name('checkout.thank');
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
-
+Route::get('command', 'HomeController@command')->name('profile.command');
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
