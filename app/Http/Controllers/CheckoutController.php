@@ -36,13 +36,21 @@ class CheckoutController extends Controller
     {
         Stripe::setApiKey('sk_test_w1VTHuP4II7gcPqJjDMH6ehQ00w7PeDuQb');
 
+        if (request()->session()->has('coupon')) {
+            $total = getTotalCoupon();
+        } else {
+            $total = Cart::total();
+        }
+
+
         $intent = PaymentIntent::create([
-            'amount' => round(Cart::total()),
+            'amount' => round($total),
             'currency' => 'eur',
         ]);
+
         $clientSecret = Arr::get($intent, 'client_secret');
 
-        return view('checkout.index', compact('clientSecret'));
+        return view('checkout.index', compact('clientSecret', 'total'));
     }
 
     /**
@@ -92,7 +100,7 @@ class CheckoutController extends Controller
         $order->save();
 
         if ($data['payementItems']['status'] === 'succeeded') {
-            Session::flash('status', 'Votre commande a été traitée avec succès.');
+            Session::flash('success', 'Votre commande a été traitée avec succès.');
             return response()->json(['status' => 'Payment Intent Succeeded']);
         } else {
             return response()->json(['error' => 'Payment Intent Not Succeeded']);
@@ -105,7 +113,7 @@ class CheckoutController extends Controller
      */
     public function thankYou()
     {
-        if (Session::has('status')) {
+        if (Session::has('success')) {
             $this->updateStock();
             Cart::destroy();
             return view('checkout.thankyou');
@@ -114,51 +122,6 @@ class CheckoutController extends Controller
             return redirect()->route('produits.index');
         }
 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     /**

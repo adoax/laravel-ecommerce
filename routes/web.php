@@ -25,6 +25,8 @@ Route::post('panier/ajouter', 'CartController@store')->name('cart.store');
 Route::get('panier', "CartController@index")->name('cart.index');
 Route::patch('panier/{cart}', 'CartController@update')->name('cart.update');
 Route::delete('panier/{cart}', "CartController@destroy")->name('cart.destroy');
+Route::post('/coupon', 'CartController@storeCoupon')->name('cart.store.coupon');
+Route::delete('/coupon', 'CartController@destroyCoupon')->name('cart.destroy.coupon');
 
 /** Route checkout */
 Route::get('paiement', 'CheckoutController@index')->name('checkout.index');

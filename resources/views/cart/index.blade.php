@@ -61,10 +61,12 @@
                                                         data-stock="{{$cart->model->stocks}}"
                                                         data-id="{{ $cart->rowId  }}">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <option value="{{$i}}" {{ $i == $cart->qty ? 'selected' : '' }}>{{$i}}</option>
+                                                        <option
+                                                            value="{{$i}}" {{ $i == $cart->qty ? 'selected' : '' }}>{{$i}}</option>
                                                     @endfor
                                                 </select>
-                                                @error('qty') <small id="qty" class="form-text text-muted">{{ $message }}</small> @enderror
+                                                @error('qty') <small id="qty"
+                                                                     class="form-text text-muted">{{ $message }}</small> @enderror
                                             </td>
                                             <td class="border-0 align-middle">
 
@@ -90,20 +92,32 @@
                         <div class="col-lg-6">
                             <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Code coupon
                             </div>
-                            <div class="p-4">
-                                <p class="font-italic mb-4">Si vous avez un code coupon, veuillez le saisir dans la case
-                                    ci-dessous</p>
-                                <div class="input-group mb-4 border rounded-pill p-2">
-                                    <input type="text" placeholder="Code coupon" aria-describedby="button-addon3"
-                                           class="form-control border-0">
-                                    <div class="input-group-append border-0">
-                                        <button id="button-addon3" type="button" class="btn btn-dark px-4 rounded-pill">
-                                            <i
-                                                class="fa fa-gift mr-2"></i>Validée
-                                        </button>
-                                    </div>
+                            @if (!request()->session()->has('coupon'))
+                                <div class="p-4">
+                                    <p class="font-italic mb-4">Si vous avez un code coupon, veuillez le saisir dans la
+                                        case
+                                        ci-dessous</p>
+                                    <form action="{{route('cart.store.coupon')}}" method="post">
+                                        <div class="input-group mb-4 border rounded-pill p-2">
+
+                                            @csrf
+                                            <input type="text" placeholder="Code coupon"
+                                                   aria-describedby="button-addon3"
+                                                   name="coupon"
+                                                   class="form-control border-0">
+                                            <div class="input-group-append border-0">
+                                                <button id="button-addon3" type="submit"
+                                                        class="btn btn-dark px-4 rounded-pill">
+                                                    <i
+                                                        class="fa fa-gift mr-2"></i>Validée
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
-                            </div>
+                            @else
+                                <p>Un coupon est deja appliquer</p>
+                            @endif
                             <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">INSTRUCTIONS
                                 POUR LE VENDEUR
                             </div>
@@ -124,14 +138,45 @@
                                     <li class="d-flex justify-content-between py-3 border-bottom"><strong
                                             class="text-muted">Sous-total
                                         </strong><strong>{{getPrice(Cart::subtotal())}}</strong></li>
-                                    <li class="d-flex justify-content-between py-3 border-bottom"><strong
-                                            class="text-muted">Taxe:
-                                            20%</strong><strong>{{getPrice(Cart::tax())}}</strong>
-                                    </li>
-                                    <li class="d-flex justify-content-between py-3 border-bottom"><strong
-                                            class="text-muted">Total</strong>
-                                        <h5 class="font-weight-bold">{{getPrice(Cart::total())}}</h5>
-                                    </li>
+                                    @if(request()->session()->has('coupon'))
+
+                                        <li class="d-flex justify-content-between py-3 border-bottom">
+                                            <strong
+                                                class="text-muted">Coupon
+                                                "{{ request()->session()->get('coupon')['code'] }}"
+                                                <form action="{{ route('cart.destroy.coupon') }}" method="POST"
+                                                      class="d-inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                            class="btn btn-outline-danger btn-sm icofont-trash"></button>
+                                                </form>
+                                            </strong>
+                                            <strong>{{ getPrice(request()->session()->get('coupon')['remise'])  }}</strong>
+                                        </li>
+                                        <li class="d-flex justify-content-between py-3 border-bottom"><strong
+                                                class="text-muted">Nouveau
+                                                sous-total</strong><strong>{{ getPrice(getSubTotalCoupon()) }}</strong>
+                                        </li>
+                                        <li class="d-flex justify-content-between py-3 border-bottom"><strong
+                                                class="text-muted">Taxe:
+                                                20%</strong><strong>{{ getPrice(getTaxCoupon())}}</strong>
+                                        </li>
+                                        <li class="d-flex justify-content-between py-3 border-bottom"><strong
+                                                class="text-muted">Total</strong>
+                                            <h5 class="font-weight-bold">{{ getPrice(getTotalCoupon()) }}</h5>
+                                        </li>
+                                    @else
+                                        <li class="d-flex justify-content-between py-3 border-bottom"><strong
+                                                class="text-muted">Taxe:
+                                                20%</strong><strong>{{getPrice(Cart::tax())}}</strong>
+                                        </li>
+                                        <li class="d-flex justify-content-between py-3 border-bottom"><strong
+                                                class="text-muted">Total</strong>
+                                            <h5 class="font-weight-bold">{{getPrice(Cart::total())}}</h5>
+                                        </li>
+                                    @endif
+
                                 </ul>
                                 <a href="{{route('checkout.index')}}" class="btn btn-dark rounded-pill py-2 btn-block">Procéder
                                     au paiement</a>

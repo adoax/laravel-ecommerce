@@ -11,7 +11,7 @@
 @section('content')
     <div class="col-md-12">
         <p>
-            Paiment ..
+            Paiment d'un montant de {{ getPrice($total) }}
         </p>
         <div class="row">
             <div class="col-md-6">
@@ -97,7 +97,6 @@
                         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         var payementItems = result.paymentIntent;
                         var url = form.action;
-
                         fetch(
                             url,
                             {

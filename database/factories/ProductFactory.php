@@ -11,7 +11,8 @@ $factory->define(Product::class, function (Faker $faker) {
         'slug' => $faker->unique()->slug,
         'excerpt' => $faker->sentence,
         'description' => $faker->text,
-        'price' => $faker->numberBetween(15, 300) * 100,
+        'price' => $faker->numberBetween(15, 100) * 100,
+        'stocks' => $faker->numberBetween(5, 45),
         'image' => 'https://via.placeholder.com/200x250'
     ];
 });

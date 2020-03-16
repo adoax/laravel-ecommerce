@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Coupon;
 use App\Http\Requests\CartRequest;
 use App\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
@@ -53,33 +54,13 @@ class CartController extends Controller
         if ($cartExist->isNotEmpty()) {
             return redirect()->route('produits.index')->with('warning', 'Le produit est dèja dans le panier');
         }
+
         $product = Product::find($request->product_id);
+
         Cart::add($product->id, $product->title, 1, $product->price)
             ->associate('App\Product');
 
         return redirect()->route('produits.index')->with('success', 'Le produit est bien éte ajouter');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -91,6 +72,7 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $data = $request->json()->all();
 
         $validates = Validator::make($request->all(), [
@@ -124,4 +106,29 @@ class CartController extends Controller
 
         return redirect()->route('cart.index')->with('status', 'Article supprimez');
     }
+
+    public function storeCoupon(Request $request)
+    {
+        $code = $request->get('coupon');
+        $coupon = Coupon::where('code', $code)->first();
+
+        if (!$coupon) {
+            return redirect()->back()->with('warning', 'Le coupon est invalide');
+        }
+
+        $request->session()->put('coupon', [
+            'code' => $coupon->code,
+            'remise' =>$coupon->discount(Cart::subTotal())
+        ]);
+
+        return redirect()->back()->with('success', 'Le coupon à été appliqué.');
+    }
+
+    public function destroyCoupon(Request $request)
+    {
+        $request->session()->forget('coupon');
+
+        return redirect()->back()->with('success', 'Le coupon à bien été supprimer');
+    }
+
 }
