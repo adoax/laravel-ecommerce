@@ -56,7 +56,6 @@ class CartController extends Controller
         }
 
         $product = Product::find($request->product_id);
-
         Cart::add($product->id, $product->title, 1, $product->price)
             ->associate('App\Product');
 
@@ -74,7 +73,6 @@ class CartController extends Controller
     {
 
         $data = $request->json()->all();
-
         $validates = Validator::make($request->all(), [
             'qty' => 'numeric|required|between:1,5',
         ]);

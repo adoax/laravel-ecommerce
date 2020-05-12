@@ -18,7 +18,7 @@ class CartTests extends TestCase
         $product = factory(Product::class)->create();
 
         $response = $this->post(route('cart.store'), [
-            'id' => $product->id
+            'product_id' => $product->id
         ]);
 
         $this->assertEquals(1, Cart::count());
@@ -30,11 +30,11 @@ class CartTests extends TestCase
         $product = factory(Product::class, 4)->create();
 
         $this->post(route('cart.store'), [
-            'id' => Product::first()->id
+            'product_id' => Product::first()->id
         ]);
 
         $this->post(route('cart.store'), [
-            'id' => Product::find(2)->id
+            'product_id' => Product::find(2)->id
         ]);
 
         $this->assertEquals(2, Cart::count());
@@ -47,13 +47,14 @@ class CartTests extends TestCase
         $product = factory(Product::class)->create();
 
         $this->post(route('cart.store'), [
-            'id' => $product->id
+            'product_id' => $product->id
         ]);
 
         $this->assertEquals(1, Cart::count());
 
         $this->json('PATCH', route('cart.update', '027c91341fd5cf4d2579b49c4b6a90da'), [
-            'qty' => 2
+            'qty' => 2,
+            'stock' => $product->stocks
         ]);
 
         $this->assertEquals(2, Cart::count());
@@ -65,7 +66,7 @@ class CartTests extends TestCase
         $product = factory(Product::class)->create();
 
         $this->post(route('cart.store'), [
-            'id' => $product->id
+            'product_id' => $product->id
         ]);
         $this->assertEquals(1, Cart::count());
 
@@ -81,11 +82,11 @@ class CartTests extends TestCase
         $product = factory(Product::class, 4)->create();
 
         $this->post(route('cart.store'), [
-            'id' => Product::first()->id
+            'product_id' => Product::first()->id
         ]);
 
         $this->post(route('cart.store'), [
-            'id' => Product::find(2)->id
+            'product_id' => Product::find(2)->id
         ]);
 
         $this->assertEquals(2, Cart::count());

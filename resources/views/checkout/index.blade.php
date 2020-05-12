@@ -10,24 +10,29 @@
 
 @section('content')
     <div class="col-md-12">
-        <p>
-            Paiment d'un montant de {{ getPrice($total) }}
-        </p>
-        <div class="row">
-            <div class="col-md-6">
-                <form id="payment-form" class="my-4" action="{{route('checkout.store')}}" method="post">
-                    @csrf
-                    <div id="card-element">
-                        <!-- Elements will create input elements here -->
-                    </div>
+        @guest
+            <p>Veuillez vous connectez pur procéder au paiement</p>
+                <a href="{{ route('login')  }}" class="btn btn-success" >Se connecter</a>
+        @else
+            <p>
+                Paiment d'un montant de {{ getPrice($total) }}
+            </p>
+            <div class="row">
+                <div class="col-md-6">
+                    <form id="payment-form" class="my-4" action="{{route('checkout.store')}}" method="post">
+                        @csrf
+                        <div id="card-element">
+                            <!-- Elements will create input elements here -->
+                        </div>
 
-                    <!-- We'll put the error messages in this element -->
-                    <div id="card-errors" role="alert"></div>
+                        <!-- We'll put the error messages in this element -->
+                        <div id="card-errors" role="alert"></div>
 
-                    <button id="submit" class="btn btn-success mt-4" type="submit">Pay</button>
-                </form>
+                        <button id="submit" class="btn btn-success mt-4" type="submit">Pay</button>
+                    </form>
+                </div>
             </div>
-        </div>
+        @endguest
     </div>
 @endsection
 
