@@ -17,7 +17,7 @@
     <!-- Icons -->
     <link rel="stylesheet" href="/icofont/icofont.min.css">
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ secure_asset('css/app.css') }}" rel="stylesheet">
     @yield('styles')
 
     @yield('script')
@@ -100,6 +100,6 @@
 @yield('javascript')
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ secure_asset('js/app.js') }}"></script>
 </body>
 </html>
